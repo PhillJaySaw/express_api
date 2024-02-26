@@ -42,6 +42,7 @@ router.post(
     [
         body("title").exists().isString(),
         body("body").exists().isString(),
+        body("productId").exists().isString(),
         handleInputErrors,
     ],
     createUpdate,
@@ -55,6 +56,7 @@ router.put(
             .isIn(["IN_PROGRESS", "SHIPPED", "DEPRECATED"])
             .optional(),
         body("version").optional(),
+        body("productId").exists().isString(),
         handleInputErrors,
     ],
     modifyUpdate,

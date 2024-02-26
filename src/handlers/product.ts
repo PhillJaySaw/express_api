@@ -59,7 +59,6 @@ export const deleteProduct = async (req, res) => {
     const deleted = await prisma.product.delete({
         where: {
             id: req.params.id,
-            // TODO this might break becuase of missing index
             belongsToId: req.user.id,
         },
     });

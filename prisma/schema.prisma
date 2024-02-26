@@ -38,10 +38,10 @@ enum UPDATE_STATUS {
   DEPRECATED
 }
 
-model  Update {
+model Update {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  udpatedAt DateTime
+  updatedAt DateTime @default(now())
 
   title   String
   body    String
@@ -55,9 +55,9 @@ model  Update {
 }
 
 model UpdatePoint {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  udpatedAt DateTime
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatededAt DateTime @default(now())
 
   name        String @db.VarChar(255)
   descirption String
