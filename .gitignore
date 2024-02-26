@@ -1,0 +1,11 @@
+# Node modules
+/node_modules
+
+# Logs
+*.log
+
+# Environment variable files
+.env
+
+# IDE files
+.idea
