@@ -84,3 +84,9 @@ router.post(
     () => {},
 );
 router.delete("/updatePoint/:id", () => {});
+
+router.use((err, req, res, next) => {
+    console.log(err);
+
+    res.status(400).json({ message: err });
+});
