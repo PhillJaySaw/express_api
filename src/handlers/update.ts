@@ -1,14 +1,11 @@
 import prisma from "../modules/db";
 
 export const getUpdates = async (req, res) => {
-    const updates = await prisma.product.findMany({
+    const updates = await prisma.update.findMany({
         where: {
-            belongsToId: req.user.id,
-        },
-        select: {
-            id: true,
-            name: true,
-            Update: true,
+            product: {
+                belongsToId: req.user.id,
+            },
         },
     });
 
@@ -16,24 +13,14 @@ export const getUpdates = async (req, res) => {
 };
 
 export const getUpdate = async (req, res) => {
-    const productsWithUpdates = await prisma.product.findMany({
+    const update = await prisma.update.findFirst({
         where: {
-            belongsToId: req.user.id,
-        },
-        select: {
-            Update: true,
+            id: req.params.id,
+            product: {
+                belongsToId: req.user.id,
+            },
         },
     });
-
-    if (!productsWithUpdates) {
-        return res.json({
-            data: { message: "No products found for this user" },
-        });
-    }
-
-    // TODO figure out how to do this in prisma request
-    const updates = productsWithUpdates.map((product) => product.Update).flat();
-    const update = updates.find((update) => update.id === req.params.id);
 
     if (!update) {
         return res.json({ data: { message: "Update not found" } });
@@ -48,7 +35,7 @@ export const createUpdate = async (req, res) => {
     });
 
     if (!product) {
-        return res.json({ message: "Prodcut not found" });
+        return res.json({ message: "Product not found" });
     }
 
     const update = await prisma.update.create({ data: req.body });
@@ -57,12 +44,19 @@ export const createUpdate = async (req, res) => {
 };
 
 export const modifyUpdate = async (req, res) => {
-    const prodcut = await prisma.product.findUnique({
-        where: { id: req.body.productId, belongsToId: req.user.id },
+    const { id: updateId } = req.params.id;
+
+    const update = await prisma.update.findFirst({
+        where: {
+            id: updateId,
+            product: {
+                belongsToId: req.user.id,
+            },
+        },
     });
 
-    if (!prodcut) {
-        return res.json({ data: { message: "Product not found" } });
+    if (!update) {
+        return res.json({ data: { message: "Update not found" } });
     }
 
     const modifiedUpdate = await prisma.update.update({
@@ -76,29 +70,19 @@ export const modifyUpdate = async (req, res) => {
 };
 
 export const deleteUpdate = async (req, res) => {
-    const productsWithUpdates = await prisma.product.findMany({
+    const { id: updateId } = req.params.id;
+
+    const update = await prisma.update.findFirst({
         where: {
-            belongsToId: req.user.id,
-        },
-        select: {
-            Update: true,
+            id: updateId,
+            product: {
+                belongsToId: req.user.id,
+            },
         },
     });
 
-    if (!productsWithUpdates) {
-        return res.json({
-            data: { message: "No products found for this user" },
-        });
-    }
-
-    // TODO figure out how to do this in prisma request
-    const updates = productsWithUpdates.map((product) => product.Update).flat();
-    const update = updates.find((update) => update.id === req.params.id);
-
     if (!update) {
-        return res.json({
-            data: { message: "udpate not found" },
-        });
+        return res.json({ data: { message: "Update not found" } });
     }
 
     const deletedUpdate = await prisma.update.delete({
